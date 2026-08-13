@@ -3,12 +3,12 @@ import { Movie, TVShow, Person, CastMember, CrewMember, VideoTrailer, Genre } fr
 import { FEATURED_TITLES } from '../data/featuredContent';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY || '';
-const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL || 'https://api.themoviedb.org/3';
+const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL || 'https://api.tmdb.org/3';
 const IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p';
 
 const tmdbClient = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000,
+  timeout: 10000,
   params: {
     api_key: API_KEY,
   },
@@ -211,18 +211,18 @@ export const tmdbService = {
   getMovieTrailers: async (id: number) => {
     try {
       const response = await tmdbClient.get(`/movie/${id}/videos`);
-      return response.data.results as VideoTrailer[];
+      return (response.data.results || []) as VideoTrailer[];
     } catch {
-      return [{ id: '1', key: 'zSWdZVtXT7E', name: 'Official Trailer', site: 'YouTube', type: 'Trailer', official: true }];
+      return [];
     }
   },
 
   getTVTrailers: async (id: number) => {
     try {
       const response = await tmdbClient.get(`/tv/${id}/videos`);
-      return response.data.results as VideoTrailer[];
+      return (response.data.results || []) as VideoTrailer[];
     } catch {
-      return [{ id: '1', key: 'b9EkMc79ZSU', name: 'Official Trailer', site: 'YouTube', type: 'Trailer', official: true }];
+      return [];
     }
   },
 

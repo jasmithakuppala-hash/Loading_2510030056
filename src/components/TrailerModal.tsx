@@ -79,9 +79,9 @@ export const TrailerModal: React.FC<TrailerModalProps> = ({ isOpen, onClose, tit
           ) : (
             <div className="text-center p-8 max-w-md">
               <AlertCircle className="w-12 h-12 text-cineRed mx-auto mb-3 animate-pulse" />
-              <h4 className="font-display font-bold text-xl text-white mb-2">No Trailer Available</h4>
+              <h4 className="font-display font-bold text-xl text-white mb-2">Trailer unavailable</h4>
               <p className="text-gray-400 text-sm">
-                TMDB has not provided an official trailer preview for this title yet.
+                TMDB has not provided an official video preview for this title yet.
               </p>
             </div>
           )}
