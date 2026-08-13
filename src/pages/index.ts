@@ -1,0 +1,9 @@
+export { MoviesPage } from './MoviesPage';
+export { TVPage } from './TVPage';
+export { PeoplePage } from './PeoplePage';
+export { GenresPage } from './GenresPage';
+export { WatchlistPage } from './WatchlistPage';
+export { SearchPage } from './SearchPage';
+export { MovieDetailsPage } from './MovieDetailsPage';
+export { TVDetailsPage } from './TVDetailsPage';
+export { PersonDetailsPage } from './PersonDetailsPage';
