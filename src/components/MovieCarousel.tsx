@@ -11,11 +11,12 @@ interface MovieCarouselProps {
   items: (Movie | TVShow)[];
   loading?: boolean;
   mediaType?: 'movie' | 'tv';
-  variant?: 'poster' | 'backdrop';
   showRanks?: boolean;
+  variant?: 'poster' | 'backdrop';
   viewAllPath?: string;
-  onPlayTrailer?: (item: Movie | TVShow, mediaType: 'movie' | 'tv') => void;
   icon?: React.ReactNode;
+  glowColor?: 'red' | 'blue' | 'gold' | 'purple';
+  onPlayTrailer?: (item: Movie | TVShow, mediaType: 'movie' | 'tv') => void;
 }
 
 export const MovieCarousel: React.FC<MovieCarouselProps> = ({
@@ -23,34 +24,53 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
   subtitle,
   items,
   loading = false,
-  mediaType = 'movie',
-  variant = 'poster',
+  mediaType,
   showRanks = false,
+  variant = 'poster',
   viewAllPath,
-  onPlayTrailer,
   icon,
+  glowColor = 'red',
+  onPlayTrailer,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleScroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = direction === 'left' ? -600 : 600;
-      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
+    if (!scrollContainerRef.current) return;
+    const scrollAmount = direction === 'left' ? -600 : 600;
+    scrollContainerRef.current.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth',
+    });
   };
 
+  const glowStyles = {
+    red: 'from-cineRed/15 via-cineViolet/10 to-transparent',
+    blue: 'from-cineBlue/15 via-cineViolet/10 to-transparent',
+    gold: 'from-amber-500/15 via-cineRed/10 to-transparent',
+    purple: 'from-cineViolet/15 via-cyan-500/10 to-transparent',
+  }[glowColor];
+
   return (
-    <section className="py-8 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header Bar */}
-        <div className="flex items-end justify-between mb-6">
+    <section className="relative py-6 group/section">
+      {/* Background Section Glow */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${glowStyles} opacity-60 pointer-events-none transition-opacity duration-500`} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header */}
+        <div className="flex items-end justify-between mb-5">
           <div className="flex items-center gap-3">
-            {icon && <div className="p-2 rounded-xl bg-cineRed/15 text-cineRed">{icon}</div>}
+            {icon && (
+              <div className="p-2 rounded-xl bg-white/10 border border-white/10 backdrop-blur-md">
+                {icon}
+              </div>
+            )}
             <div>
-              <h3 className="font-display font-black text-2xl sm:text-3xl tracking-tight text-white flex items-center gap-2">
+              <h2 className="font-display font-black text-xl sm:text-3xl text-white tracking-tight uppercase">
                 {title}
-              </h3>
-              {subtitle && <p className="text-xs sm:text-sm text-gray-400 font-sans mt-0.5">{subtitle}</p>}
+              </h2>
+              {subtitle && (
+                <p className="text-xs sm:text-sm text-gray-300 font-sans mt-0.5">{subtitle}</p>
+              )}
             </div>
           </div>
 
@@ -58,55 +78,66 @@ export const MovieCarousel: React.FC<MovieCarouselProps> = ({
             {viewAllPath && (
               <Link
                 to={viewAllPath}
-                className="hidden sm:flex items-center gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-cineRed hover:text-red-400 transition-colors group"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-display font-bold text-cineRed hover:text-red-400 uppercase tracking-wider transition-colors mr-2"
               >
-                <span>VIEW ALL</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <span>EXPLORE ALL</span>
+                <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             )}
 
-            {/* Scroll Navigation Buttons */}
-            <div className="flex items-center gap-2">
+            {/* Navigation Arrows */}
+            <div className="flex items-center gap-1.5">
               <button
                 onClick={() => handleScroll('left')}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-colors focus:outline-none"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white transition-all focus:outline-none disabled:opacity-30"
                 aria-label="Scroll left"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => handleScroll('right')}
-                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-colors focus:outline-none"
+                className="p-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-white transition-all focus:outline-none disabled:opacity-30"
                 aria-label="Scroll right"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Carousel Content */}
+        {/* Carousel Container */}
         {loading ? (
           <CarouselSkeleton count={6} />
-        ) : items.length === 0 ? (
-          <div className="py-12 text-center text-gray-400 bg-cineDark-800/50 rounded-2xl border border-white/5">
-            No content available at the moment.
-          </div>
         ) : (
           <div
-            ref={scrollRef}
-            className="flex gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth"
+            ref={scrollContainerRef}
+            className="flex items-center gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2 px-1 -mx-1"
           >
-            {items.map((item, index) => (
-              <MovieCard
-                key={`${item.id}-${index}`}
-                item={item}
-                mediaType={mediaType}
-                rank={showRanks ? index + 1 : undefined}
-                variant={variant}
-                onPlayTrailer={onPlayTrailer}
-              />
-            ))}
+            {items.map((item, index) => {
+              const itemMediaType =
+                mediaType ||
+                (item.media_type as 'movie' | 'tv') ||
+                ((item as Movie).title ? 'movie' : 'tv');
+
+              return (
+                <div
+                  key={`${item.id}-${index}`}
+                  className={
+                    variant === 'backdrop'
+                      ? 'flex-none w-64 sm:w-80'
+                      : 'flex-none w-36 sm:w-48 lg:w-52'
+                  }
+                >
+                  <MovieCard
+                    item={item}
+                    mediaType={itemMediaType}
+                    rank={showRanks ? index + 1 : undefined}
+                    variant={variant}
+                    onPlayTrailer={onPlayTrailer}
+                  />
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

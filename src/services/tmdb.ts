@@ -13,10 +13,30 @@ const tmdbClient = axios.create({
   },
 });
 
-// Image URL Builders with Robust Fallback & Direct URL Handling
+const FALLBACK_POSTERS = [
+  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1517976487492-5750f3195933?q=80&w=800&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop',
+];
+
+const FALLBACK_BACKDROPS = [
+  'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=1920&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1920&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1920&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1498409785966-ab341407de6e?q=80&w=1920&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1920&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1542401886-65d6c61db217?q=80&w=1920&auto=format&fit=crop',
+];
+
 export const getImageUrl = (path: string | null, size: 'w185' | 'w342' | 'w500' | 'w780' | 'w1280' | 'original' = 'w500'): string => {
   if (!path) {
-    return 'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg';
+    const randomIndex = Math.floor(Math.random() * FALLBACK_POSTERS.length);
+    return FALLBACK_POSTERS[randomIndex];
   }
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
@@ -26,7 +46,8 @@ export const getImageUrl = (path: string | null, size: 'w185' | 'w342' | 'w500' 
 
 export const getBackdropUrl = (path: string | null, size: 'w780' | 'w1280' | 'original' = 'original'): string => {
   if (!path) {
-    return 'https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo6LEuPJevZzB.jpg';
+    const randomIndex = Math.floor(Math.random() * FALLBACK_BACKDROPS.length);
+    return FALLBACK_BACKDROPS[randomIndex];
   }
   if (path.startsWith('http://') || path.startsWith('https://')) {
     return path;
@@ -64,11 +85,9 @@ export const fetchGenreMap = async (): Promise<Record<number, string>> => {
   }
 };
 
-// Auxiliary Fallback Data Filtering Helpers
 const getFeaturedMovies = () => FEATURED_TITLES.filter((item) => (item as Movie).title) as Movie[];
 const getFeaturedTV = () => FEATURED_TITLES.filter((item) => (item as TVShow).name) as TVShow[];
 
-// API Services
 export const tmdbService = {
   // Trending
   getTrending: async (mediaType: 'all' | 'movie' | 'tv' = 'all', timeWindow: 'day' | 'week' = 'week') => {
@@ -155,10 +174,10 @@ export const tmdbService = {
     } catch {
       return {
         cast: [
-          { id: 1, name: 'Cillian Murphy', character: 'J. Robert Oppenheimer', profile_path: 'https://image.tmdb.org/t/p/w185/33f5d5qg7a52f.jpg', order: 1 },
-          { id: 2, name: 'Matthew McConaughey', character: 'Cooper', profile_path: 'https://image.tmdb.org/t/p/w185/eP140d393.jpg', order: 2 },
-          { id: 3, name: 'Leonardo DiCaprio', character: 'Dom Cobb', profile_path: 'https://image.tmdb.org/t/p/w185/wo2hJpn04vbtmh0L9jUr0vRj.jpg', order: 3 },
-          { id: 4, name: 'Christian Bale', character: 'Bruce Wayne / Batman', profile_path: 'https://image.tmdb.org/t/p/w185/b7V2L4j9b3.jpg', order: 4 },
+          { id: 1, name: 'Cillian Murphy', character: 'J. Robert Oppenheimer', profile_path: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop', order: 1 },
+          { id: 2, name: 'Matthew McConaughey', character: 'Cooper', profile_path: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop', order: 2 },
+          { id: 3, name: 'Leonardo DiCaprio', character: 'Dom Cobb', profile_path: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300&auto=format&fit=crop', order: 3 },
+          { id: 4, name: 'Christian Bale', character: 'Bruce Wayne / Batman', profile_path: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=300&auto=format&fit=crop', order: 4 },
         ],
         crew: [
           { id: 10, name: 'Christopher Nolan', job: 'Director', department: 'Directing', profile_path: null },
@@ -178,9 +197,9 @@ export const tmdbService = {
     } catch {
       return {
         cast: [
-          { id: 20, name: 'Bryan Cranston', character: 'Walter White', profile_path: null, order: 1 },
-          { id: 21, name: 'Millie Bobby Brown', character: 'Eleven', profile_path: null, order: 2 },
-          { id: 22, name: 'Jenna Ortega', character: 'Wednesday Addams', profile_path: null, order: 3 },
+          { id: 20, name: 'Bryan Cranston', character: 'Walter White', profile_path: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop', order: 1 },
+          { id: 21, name: 'Millie Bobby Brown', character: 'Eleven', profile_path: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=300&auto=format&fit=crop', order: 2 },
+          { id: 22, name: 'Jenna Ortega', character: 'Wednesday Addams', profile_path: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop', order: 3 },
         ],
         crew: [],
       };
@@ -254,7 +273,7 @@ export const tmdbService = {
         return response.data.results as (Movie | TVShow | Person)[];
       }
     } catch {
-      // Fallback local search
+      // Fallback
     }
     const q = query.toLowerCase();
     return FEATURED_TITLES.filter((item) => {
@@ -271,7 +290,7 @@ export const tmdbService = {
         return response.data.results;
       }
     } catch {
-      // Fallback local discover
+      // Fallback
     }
     return type === 'movie' ? getFeaturedMovies() : getFeaturedTV();
   },
@@ -287,12 +306,12 @@ export const tmdbService = {
       // Fallback
     }
     return [
-      { id: 525, name: 'Christopher Nolan', profile_path: 'https://image.tmdb.org/t/p/w185/z847120a5a54a.jpg', known_for_department: 'Directing' },
-      { id: 2038, name: 'Cillian Murphy', profile_path: 'https://image.tmdb.org/t/p/w185/33f5d5qg7a52f.jpg', known_for_department: 'Acting' },
-      { id: 10296, name: 'Matthew McConaughey', profile_path: 'https://image.tmdb.org/t/p/w185/eP140d393.jpg', known_for_department: 'Acting' },
-      { id: 6193, name: 'Leonardo DiCaprio', profile_path: 'https://image.tmdb.org/t/p/w185/wo2hJpn04vbtmh0L9jUr0vRj.jpg', known_for_department: 'Acting' },
-      { id: 3894, name: 'Christian Bale', profile_path: 'https://image.tmdb.org/t/p/w185/b7V2L4j9b3.jpg', known_for_department: 'Acting' },
-      { id: 1190668, name: 'Timothée Chalamet', profile_path: 'https://image.tmdb.org/t/p/w185/n6brmg29m9STmDMsBq7V9uYvMTd.jpg', known_for_department: 'Acting' },
+      { id: 525, name: 'Christopher Nolan', profile_path: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=300&auto=format&fit=crop', known_for_department: 'Directing' },
+      { id: 2038, name: 'Cillian Murphy', profile_path: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=300&auto=format&fit=crop', known_for_department: 'Acting' },
+      { id: 10296, name: 'Matthew McConaughey', profile_path: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=300&auto=format&fit=crop', known_for_department: 'Acting' },
+      { id: 6193, name: 'Leonardo DiCaprio', profile_path: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=300&auto=format&fit=crop', known_for_department: 'Acting' },
+      { id: 3894, name: 'Christian Bale', profile_path: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=300&auto=format&fit=crop', known_for_department: 'Acting' },
+      { id: 1190668, name: 'Timothée Chalamet', profile_path: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop', known_for_department: 'Acting' },
     ] as Person[];
   },
 
@@ -305,7 +324,7 @@ export const tmdbService = {
       return {
         id,
         name: 'Christopher Nolan',
-        profile_path: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+        profile_path: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
         biography: 'Christopher Edward Nolan is a British-American film director, producer, and screenwriter. Known for his Hollywood blockbusters with complex storytelling, Nolan is considered a leading filmmaker of the 21st century.',
         known_for_department: 'Directing',
         birthday: '1970-07-30',
