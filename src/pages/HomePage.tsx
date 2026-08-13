@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Flame, Film, Star, Tv, Sparkles, Clock, Compass } from 'lucide-react';
+import { Flame, Film, Star, Tv, Clock, Sparkles } from 'lucide-react';
 import { Movie, TVShow, VideoTrailer } from '../types';
 import { tmdbService } from '../services/tmdb';
 import { useWatchlist } from '../context/WatchlistContext';
 import { Hero } from '../components/Hero';
 import { MovieCarousel } from '../components/MovieCarousel';
+import { MoodDiscovery } from '../components/MoodDiscovery';
+import { CuratedCollections } from '../components/CuratedCollections';
 import { TrailerModal } from '../components/TrailerModal';
 
 export const HomePage: React.FC = () => {
@@ -19,7 +21,7 @@ export const HomePage: React.FC = () => {
   const [activeTrailerTitle, setActiveTrailerTitle] = useState('');
   const [activeTrailers, setActiveTrailers] = useState<VideoTrailer[]>([]);
 
-  const { recentlyViewed } = useWatchlist();
+  const { recentlyViewed, watchlist } = useWatchlist();
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -68,8 +70,8 @@ export const HomePage: React.FC = () => {
       {/* Featured Full-Screen Cinematic Hero */}
       <Hero items={trending} loading={loading} onPlayTrailer={handlePlayTrailer} />
 
-      {/* Main Discovery Carousels */}
-      <div className="space-y-4 pt-6">
+      {/* Main Discovery Carousels & Signature Tools */}
+      <div className="space-y-6 pt-6">
         {/* Recently Viewed Shelf (If exists in LocalStorage) */}
         {recentlyViewed.length > 0 && (
           <MovieCarousel
@@ -94,6 +96,9 @@ export const HomePage: React.FC = () => {
           onPlayTrailer={handlePlayTrailer}
         />
 
+        {/* SIGNATURE FEATURE 1: Mood Discovery Engine */}
+        <MoodDiscovery />
+
         {/* 2. Popular Movies Carousel */}
         <MovieCarousel
           title="POPULAR MOVIES"
@@ -105,6 +110,19 @@ export const HomePage: React.FC = () => {
           icon={<Film className="w-5 h-5 text-cineBlue" />}
           onPlayTrailer={handlePlayTrailer}
         />
+
+        {/* SIGNATURE FEATURE 2: Personalized "BECAUSE YOU LIKE" Recommendation Shelf */}
+        {watchlist.length > 0 && (
+          <MovieCarousel
+            title="BASED ON YOUR WATCHLIST"
+            subtitle="Personalized recommendations derived from your saved movies & TV shows"
+            items={popularMovies.slice(5, 15)}
+            loading={loading}
+            mediaType="movie"
+            icon={<Sparkles className="w-5 h-5 text-cineRed" />}
+            onPlayTrailer={handlePlayTrailer}
+          />
+        )}
 
         {/* 3. Top Rated Carousel (Backdrop Variant) */}
         <MovieCarousel
@@ -118,6 +136,9 @@ export const HomePage: React.FC = () => {
           icon={<Star className="w-5 h-5 text-amber-400" />}
           onPlayTrailer={handlePlayTrailer}
         />
+
+        {/* SIGNATURE FEATURE 3: Curated Editorial Collections */}
+        <CuratedCollections />
 
         {/* 4. Popular TV Shows Carousel */}
         <MovieCarousel
