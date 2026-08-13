@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider } from './context/ThemeContext';
 import { WatchlistProvider } from './context/WatchlistContext';
 import { MoodProvider } from './context/MoodContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
@@ -67,15 +68,17 @@ export const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <ThemeProvider>
-      <WatchlistProvider>
-        <MoodProvider>
-          <Router>
-            <AppContent />
-          </Router>
-        </MoodProvider>
-      </WatchlistProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <WatchlistProvider>
+          <MoodProvider>
+            <Router>
+              <AppContent />
+            </Router>
+          </MoodProvider>
+        </WatchlistProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 
