@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Movie, TVShow, Person, CastMember, CrewMember, VideoTrailer, Genre } from '../types';
 import { FEATURED_TITLES } from '../data/featuredContent';
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY || '8956ae5b10a273b40cfd68ca1bf92a54';
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY || '';
 const BASE_URL = import.meta.env.VITE_TMDB_BASE_URL || 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p';
 
