@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { Toast } from './components/Toast';
 import { CommandPalette } from './components/CommandPalette';
+import { MobileBottomNav } from './components/MobileBottomNav';
 
 import { HomePage } from './pages/HomePage';
 import {
@@ -36,7 +37,7 @@ export const AppContent: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-cineDark-900 text-white transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-cineDark-900 text-white transition-colors duration-300 pb-14 md:pb-0">
       <Navbar onOpenCommandSearch={() => setCommandPaletteOpen(true)} />
       <main className="flex-1">
         <Routes>
@@ -55,6 +56,7 @@ export const AppContent: React.FC = () => {
       </main>
       <Footer />
       <Toast />
+      <MobileBottomNav onOpenSearch={() => setCommandPaletteOpen(true)} />
       <CommandPalette
         isOpen={commandPaletteOpen}
         onClose={() => setCommandPaletteOpen(false)}
