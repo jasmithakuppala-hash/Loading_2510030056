@@ -8,6 +8,7 @@ const IMAGE_BASE_URL = import.meta.env.VITE_TMDB_IMAGE_BASE_URL || 'https://imag
 
 const tmdbClient = axios.create({
   baseURL: BASE_URL,
+  timeout: 5000,
   params: {
     api_key: API_KEY,
   },
